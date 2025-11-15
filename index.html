@@ -56,12 +56,12 @@
                 <div>
                     <label class="block text-xs text-gray-300 mb-1" for="login-user">Correo</label>
                     <input id="login-user" type="email" required
-                            class="w-full rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
                     <label class="block text-xs text-gray-300 mb-1" for="login-pass">Contraseña</label>
                     <input id="login-pass" type="password" required
-                            class="w-full rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <p id="login-error" class="text-xs text-red-400 hidden">Ingresa usuario y contraseña.</p>
                 <button type="submit"
@@ -126,3 +126,151 @@
 
                 <!-- Puedes ajustar textos y datos a gusto -->
                 <article class="bg-gray-800 rounded-lg px-3 py-2 flex items-center justify-between mb-2">
+                    <div>
+                        <p class="text-xs font-semibold">MLA-01 · Monofásica</p>
+                        <p class="text-[0.7rem] text-gray-400">
+                            <i class="fas fa-map-marker-alt mr-1"></i> Temuco · OT 1523
+                        </p>
+                    </div>
+                    <span class="inline-flex items-center text-[0.7rem] px-2 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/40">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-400 mr-1"></span>
+                        En faena
+                    </span>
+                </article>
+
+                <article class="bg-gray-800 rounded-lg px-3 py-2 flex items-center justify-between mb-2">
+                    <div>
+                        <p class="text-xs font-semibold">MLA-07 · Monofásica</p>
+                        <p class="text-[0.7rem] text-gray-400">
+                            <i class="fas fa-map-marker-alt mr-1"></i> Padre Las Casas · OT 1679
+                        </p>
+                    </div>
+                    <span class="inline-flex items-center text-[0.7rem] px-2 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/40">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 mr-1"></span>
+                        En ruta
+                    </span>
+                </article>
+
+                <article class="bg-gray-800 rounded-lg px-3 py-2 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold">TUSAN-02 · Trifásica</p>
+                        <p class="text-[0.7rem] text-gray-400">
+                            <i class="fas fa-map-marker-alt mr-1"></i> Angol · OT 1903
+                        </p>
+                    </div>
+                    <span class="inline-flex items-center text-[0.7rem] px-2 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/40">
+                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 mr-1"></span>
+                        En espera
+                    </span>
+                </article>
+            </section>
+
+            <!-- ====== ALERTAS ====== -->
+            <section id="page-alertas" class="page px-3 pt-3 pb-2 hidden">
+                <h2 class="text-sm font-semibold mb-2">Alertas</h2>
+
+                <article class="bg-gray-800 rounded-lg px-3 py-2 flex items-start gap-2 mb-2 border-l-4 border-red-500">
+                    <i class="fas fa-exclamation-triangle text-red-400 mt-0.5"></i>
+                    <div>
+                        <p class="text-xs font-semibold text-red-300">Brigadas offline</p>
+                        <p class="text-[0.75rem] text-gray-300">
+                            2 brigadas han perdido conexión en las últimas 2 horas. Priorizar revisión de equipos.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="bg-gray-800 rounded-lg px-3 py-2 flex items-start gap-2 border-l-4 border-yellow-500">
+                    <i class="fas fa-bell text-yellow-400 mt-0.5"></i>
+                    <div>
+                        <p class="text-xs font-semibold text-yellow-300">OT en espera</p>
+                        <p class="text-[0.75rem] text-gray-300">
+                            4 órdenes de trabajo llevan más de 45 minutos en estado "en espera".
+                        </p>
+                    </div>
+                </article>
+            </section>
+
+            <!-- ====== PERFIL ====== -->
+            <section id="page-perfil" class="page px-3 pt-3 pb-2 hidden">
+                <h2 class="text-sm font-semibold mb-2">Perfil de supervisor</h2>
+
+                <div class="bg-gray-800 rounded-lg p-3 flex gap-3 items-center mb-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-lg font-bold">
+                        <span>SC</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold">Supervisor CGE Zona Sur</p>
+                        <p class="text-[0.75rem] text-gray-400">scge@cge.cl</p>
+                        <p class="text-[0.7rem] text-gray-500 mt-1">
+                            Turno: 08:00 - 18:00 · Lunes a Viernes
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 rounded-lg p-3 text-[0.75rem] space-y-1">
+                    <p class="font-semibold text-gray-200 mb-1">Resumen</p>
+                    <p class="text-gray-300">
+                        Esta vista permite al supervisor revisar su información básica y
+                        el estado general de las brigadas en su zona.
+                    </p>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- ===================== NAV BAR ===================== -->
+        <nav class="bg-gray-800 border-t border-gray-700 grid grid-cols-4 text-[0.7rem] flex-shrink-0">
+            <button class="tab-btn active py-2 flex flex-col items-center" onclick="showPage('mapa', this)">
+                <i class="fas fa-map-marked-alt text-sm mb-0.5"></i>
+                <span>Mapa</span>
+            </button>
+            <button class="tab-btn py-2 flex flex-col items-center" onclick="showPage('brigadas', this)">
+                <i class="fas fa-users text-sm mb-0.5"></i>
+                <span>Brigadas</span>
+            </button>
+            <button class="tab-btn py-2 flex flex-col items-center" onclick="showPage('alertas', this)">
+                <i class="fas fa-bell text-sm mb-0.5"></i>
+                <span>Alertas</span>
+            </button>
+            <button class="tab-btn py-2 flex flex-col items-center" onclick="showPage('perfil', this)">
+                <i class="fas fa-user-circle text-sm mb-0.5"></i>
+                <span>Perfil</span>
+            </button>
+        </nav>
+    </div>
+</div>
+
+<script>
+    // ----- LOGIN -----
+    document.getElementById('login-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const user = document.getElementById('login-user').value.trim();
+        const pass = document.getElementById('login-pass').value.trim();
+        const error = document.getElementById('login-error');
+
+        if (!user || !pass) {
+            error.classList.remove('hidden');
+            return;
+        }
+        error.classList.add('hidden');
+
+        // Mostrar app y ocultar login
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('app').classList.remove('hidden');
+    });
+
+    // ----- CAMBIO DE PESTAÑAS -----
+    function showPage(pageId, btn) {
+        // Ocultar todas las páginas
+        document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+        // Mostrar la seleccionada
+        document.getElementById('page-' + pageId).classList.remove('hidden');
+
+        // Actualizar estado de botones
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+</script>
+
+</body>
+</html>
