@@ -2,110 +2,144 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <!-- Importante para que se vea bien en celular -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Viewport esencial para diseño móvil-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CGE App Móvil</title>
-
-    <!-- Tailwind CSS -->
+    <!-- Carga de Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Iconos Font Awesome -->
+    <!-- Carga de biblioteca de iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
     <style>
+        /* Fuente principal */
         body {
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Evita el flash azul al tocar en móviles */
         }
-        .phone-frame {
-            max-width: 420px;
-            height: 100vh;
+        /* Ocultar scrollbars */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Estilos de pines de mapa (igual que el dashboard) */
+        .brigade-pin {
+            position: absolute;
+            width: 2.2rem; height: 2.2rem;
+            border-radius: 50% 50% 50% 0;
+            display: flex; justify-content: center; align-items: center;
+            transform: rotate(-45deg);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.5s ease-in-out;
+            border: 2px solid white;
         }
-        .tab-btn.active {
-            color: #60a5fa; /* text-blue-400 */
-            border-top: 2px solid #60a5fa;
+        .brigade-pin i {
+            transform: rotate(45deg);
+            color: white;
+            font-size: 0.9rem;
+        }
+        .status-ruta { background-color: #3b82f6; }
+        .status-faena { background-color: #10b981; }
+        .status-espera { background-color: #f59e0b; }
+        .status-offline { background-color: #6b7280; }
+        .status-tarea { background-color: #8b5cf6; }
+        .status-ruta { animation: pulse-blue 2s infinite; }
+        @keyframes pulse-blue {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+
+        /* Estilos de botones de acción */
+        .btn-start { background-color: #10b981; color: white; }
+        .btn-finish { background-color: #ef4444; color: white; }
+        .btn-neutral { background-color: #6b7280; color: white; }
+        
+        /* Estilo de la pestaña de navegación activa */
+        .tab-item.active {
+            color: #3b82f6;
+            border-top: 2px solid #3b82f6;
+            background-color: #1f2937; /* Ligeramente más claro que el fondo de la barra */
+        }
+        .tab-item {
+            border-top: 2px solid transparent;
+        }
+
+        /* Modal (pantalla completa) para detalles */
+        .detail-modal {
+            transition: transform 0.3s ease-out;
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white flex justify-center">
+<body class="bg-gray-900 text-white h-screen flex flex-col">
 
-<div class="phone-frame w-full flex flex-col">
-
-    <!-- ===================== LOGIN ===================== -->
-    <div id="login-screen" class="flex flex-col h-full">
-        <!-- Header login -->
-        <header class="bg-gray-800 px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <i class="fas fa-broadcast-tower text-blue-500 text-xl"></i>
+    <!-- ========== LOGIN ========== -->
+    <div id="login-screen" class="flex-1 flex flex-col items-center justify-center px-6">
+        <div class="w-full max-w-sm">
+            <div class="flex items-center justify-center gap-2 mb-4">
+                <i class="fas fa-broadcast-tower text-blue-500 text-2xl"></i>
                 <div>
-                    <h1 class="text-base font-bold leading-tight">CGE Torre Móvil</h1>
+                    <h1 class="text-lg font-bold leading-tight">CGE Torre Móvil</h1>
                     <p class="text-xs text-gray-400">Acceso a supervisión</p>
                 </div>
             </div>
-        </header>
-
-        <!-- Contenido login -->
-        <main class="flex-grow flex flex-col justify-center px-6">
-            <h2 class="text-lg font-semibold mb-4 text-center">Iniciar sesión</h2>
-            <p class="text-xs text-gray-400 mb-4 text-center">
-                Para la demostración, pueden usar por ejemplo:<br>
-                <span class="font-mono">usuario: demo@cge.cl · clave: 1234</span>
+            <h2 class="text-base font-semibold mb-2 text-center">Iniciar sesión</h2>
+            <p class="text-[0.7rem] text-gray-400 mb-4 text-center">
+                Para la demo pueden usar cualquier correo y clave (solo validamos que no estén vacíos).
             </p>
-
-            <form id="login-form" class="space-y-4">
+            <form id="login-form" class="space-y-3">
                 <div>
-                    <label class="block text-xs text-gray-300 mb-1" for="login-user">Correo</label>
-                    <input id="login-user" type="email" required
-                           class="w-full rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <label for="login-user" class="block text-xs text-gray-300 mb-1">Correo</label>
+                    <input id="login-user" type="email"
+                            class="w-full rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-300 mb-1" for="login-pass">Contraseña</label>
-                    <input id="login-pass" type="password" required
-                           class="w-full rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <label for="login-pass" class="block text-xs text-gray-300 mb-1">Contraseña</label>
+                    <input id="login-pass" type="password"
+                            class="w-full rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-                <p id="login-error" class="text-xs text-red-400 hidden">Ingresa usuario y contraseña.</p>
+                <p id="login-error" class="text-xs text-red-400 hidden">Ingresa usuario y contraseña para continuar.</p>
                 <button type="submit"
                         class="w-full mt-2 bg-blue-600 hover:bg-blue-500 text-sm font-semibold py-2 rounded-lg">
                     Iniciar sesión
                 </button>
             </form>
-        </main>
-
-        <footer class="text-[0.65rem] text-gray-500 text-center pb-3">
-            Proyecto académico · CGE App Móvil
-        </footer>
+            <p class="text-[0.65rem] text-gray-500 mt-4 text-center">
+                Proyecto académico · CGE App Móvil
+            </p>
+        </div>
     </div>
 
-    <!-- ===================== APP ===================== -->
-    <div id="app" class="flex flex-col h-full hidden">
+    <!-- ========== APP COMPLETA ========== -->
+    <div id="app-screen" class="hidden h-full flex flex-col">
 
-        <!-- Header de la app -->
-        <header class="bg-gray-800 px-4 py-3 flex justify-between items-center flex-shrink-0">
-            <div class="flex items-center gap-2">
-                <i class="fas fa-broadcast-tower text-blue-500 text-xl"></i>
-                <div>
-                    <h1 class="text-base font-bold leading-tight">Torre de Control CGE</h1>
-                    <p class="text-xs text-gray-400">Supervisión en terreno</p>
-                </div>
+        <!-- Encabezado Superior -->
+        <header class="bg-gray-800 shadow-md flex-shrink-0 z-10">
+            <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+                <h1 class="text-lg font-bold text-white">
+                    <i class="fas fa-broadcast-tower text-blue-500"></i>
+                    Torre de Control Móvil
+                </h1>
+                <span id="operational-status-dot" class="w-3 h-3 rounded-full bg-gray-500" title="Estado Operacional"></span>
             </div>
-            <span class="inline-flex items-center text-xs text-green-400">
-                <span class="w-2.5 h-2.5 rounded-full bg-green-400 mr-1"></span>
-                Online
-            </span>
         </header>
 
-        <!-- Contenido de páginas -->
-        <main class="flex-grow overflow-y-auto">
+        <!-- Área de Contenido Principal (Páginas) -->
+        <main class="flex-grow overflow-y-auto no-scrollbar">
+            
+            <!-- Página 1: KPIs (Dashboard) -->
+            <div id="page-kpis" class="page-content p-4">
+                <h2 class="text-xl font-semibold text-gray-200 mb-4">Indicadores Clave (KPIs)</h2>
+                <section id="kpi-container-mobile" class="grid grid-cols-2 gap-4">
+                    <!-- KPIs se generan dinámicamente -->
+                </section>
+            </div>
+            
+            <!-- Página 2: Mapa -->
+            <div id="page-map" class="page-content hidden h-full space-y-2">
 
-            <!-- ====== MAPA ====== -->
-            <section id="page-mapa" class="page px-3 pt-3 pb-2">
-                <h2 class="text-sm font-semibold mb-2">Mapa de brigadas</h2>
-
-                <div class="relative w-full rounded-xl overflow-hidden bg-gray-700 h-64 mb-3">
-                    <!-- GOOGLE MAPS EMBED -->
-                    <!-- Reemplaza el src de este iframe por el que saques de Google Maps (Compartir -> Insertar mapa) -->
+                <!-- Google Maps real -->
+                <div class="w-full" style="height: 40vh;">
+                    <!-- Cambia el src por el iframe que te dé Google Maps si quieres otra zona -->
                     <iframe
-                        class="absolute inset-0 w-full h-full"
+                        class="w-full h-full"
                         style="border:0;"
                         loading="lazy"
                         allowfullscreen
@@ -114,163 +148,463 @@
                     </iframe>
                 </div>
 
-                <p class="text-[0.75rem] text-gray-400 mb-2">
-                    En el mapa se visualiza la zona de operación (ejemplo: Temuco y alrededores). Las brigadas se gestionan
-                    desde las pestañas inferiores.
-                </p>
-            </section>
-
-            <!-- ====== BRIGADAS ====== -->
-            <section id="page-brigadas" class="page px-3 pt-3 pb-2 hidden">
-                <h2 class="text-sm font-semibold mb-2">Brigadas en terreno</h2>
-
-                <!-- Puedes ajustar textos y datos a gusto -->
-                <article class="bg-gray-800 rounded-lg px-3 py-2 flex items-center justify-between mb-2">
-                    <div>
-                        <p class="text-xs font-semibold">MLA-01 · Monofásica</p>
-                        <p class="text-[0.7rem] text-gray-400">
-                            <i class="fas fa-map-marker-alt mr-1"></i> Temuco · OT 1523
-                        </p>
-                    </div>
-                    <span class="inline-flex items-center text-[0.7rem] px-2 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/40">
-                        <span class="w-1.5 h-1.5 rounded-full bg-green-400 mr-1"></span>
-                        En faena
-                    </span>
-                </article>
-
-                <article class="bg-gray-800 rounded-lg px-3 py-2 flex items-center justify-between mb-2">
-                    <div>
-                        <p class="text-xs font-semibold">MLA-07 · Monofásica</p>
-                        <p class="text-[0.7rem] text-gray-400">
-                            <i class="fas fa-map-marker-alt mr-1"></i> Padre Las Casas · OT 1679
-                        </p>
-                    </div>
-                    <span class="inline-flex items-center text-[0.7rem] px-2 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/40">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 mr-1"></span>
-                        En ruta
-                    </span>
-                </article>
-
-                <article class="bg-gray-800 rounded-lg px-3 py-2 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-semibold">TUSAN-02 · Trifásica</p>
-                        <p class="text-[0.7rem] text-gray-400">
-                            <i class="fas fa-map-marker-alt mr-1"></i> Angol · OT 1903
-                        </p>
-                    </div>
-                    <span class="inline-flex items-center text-[0.7rem] px-2 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/40">
-                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 mr-1"></span>
-                        En espera
-                    </span>
-                </article>
-            </section>
-
-            <!-- ====== ALERTAS ====== -->
-            <section id="page-alertas" class="page px-3 pt-3 pb-2 hidden">
-                <h2 class="text-sm font-semibold mb-2">Alertas</h2>
-
-                <article class="bg-gray-800 rounded-lg px-3 py-2 flex items-start gap-2 mb-2 border-l-4 border-red-500">
-                    <i class="fas fa-exclamation-triangle text-red-400 mt-0.5"></i>
-                    <div>
-                        <p class="text-xs font-semibold text-red-300">Brigadas offline</p>
-                        <p class="text-[0.75rem] text-gray-300">
-                            2 brigadas han perdido conexión en las últimas 2 horas. Priorizar revisión de equipos.
-                        </p>
-                    </div>
-                </article>
-
-                <article class="bg-gray-800 rounded-lg px-3 py-2 flex items-start gap-2 border-l-4 border-yellow-500">
-                    <i class="fas fa-bell text-yellow-400 mt-0.5"></i>
-                    <div>
-                        <p class="text-xs font-semibold text-yellow-300">OT en espera</p>
-                        <p class="text-[0.75rem] text-gray-300">
-                            4 órdenes de trabajo llevan más de 45 minutos en estado "en espera".
-                        </p>
-                    </div>
-                </article>
-            </section>
-
-            <!-- ====== PERFIL ====== -->
-            <section id="page-perfil" class="page px-3 pt-3 pb-2 hidden">
-                <h2 class="text-sm font-semibold mb-2">Perfil de supervisor</h2>
-
-                <div class="bg-gray-800 rounded-lg p-3 flex gap-3 items-center mb-3">
-                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-lg font-bold">
-                        <span>SC</span>
-                    </div>
-                    <div>
-                        <p class="text-xs font-semibold">Supervisor CGE Zona Sur</p>
-                        <p class="text-[0.75rem] text-gray-400">scge@cge.cl</p>
-                        <p class="text-[0.7rem] text-gray-500 mt-1">
-                            Turno: 08:00 - 18:00 · Lunes a Viernes
-                        </p>
-                    </div>
+                <!-- Mapa simulado con pines de brigadas -->
+                <div id="map-container" class="relative w-full bg-gray-700" style="height: 40vh;">
+                    <!-- Zonas (como referencia) -->
+                    <div class="absolute top-[30%] left-[40%] text-gray-300 font-bold text-xs p-1 bg-black/30 rounded">Temuco</div>
+                    <div class="absolute top-[20%] left-[20%] text-gray-300 font-bold text-xs p-1 bg-black/30 rounded">Angol</div>
+                    <div class="absolute top-[60%] left-[70%] text-gray-300 font-bold text-xs p-1 bg-black/30 rounded">Villarrica</div>
+                    <!-- Pines de brigadas (camiones, etc. se generan con JS) -->
                 </div>
+            </div>
 
-                <div class="bg-gray-800 rounded-lg p-3 text-[0.75rem] space-y-1">
-                    <p class="font-semibold text-gray-200 mb-1">Resumen</p>
-                    <p class="text-gray-300">
-                        Esta vista permite al supervisor revisar su información básica y
-                        el estado general de las brigadas en su zona.
-                    </p>
+            <!-- Página 3: Brigadas -->
+            <div id="page-brigades" class="page-content hidden">
+                <div id="brigade-list-container-mobile" class="divide-y divide-gray-700">
+                    <!-- Lista de brigadas -->
                 </div>
-            </section>
+            </div>
+
+            <!-- Página 4: Alertas -->
+            <div id="page-alerts" class="page-content hidden p-4">
+                <h2 class="text-xl font-semibold text-gray-200 mb-4">Alertas Críticas</h2>
+                <section id="alert-container-mobile" class="space-y-3">
+                    <!-- Alertas -->
+                </section>
+            </div>
 
         </main>
 
-        <!-- ===================== NAV BAR ===================== -->
-        <nav class="bg-gray-800 border-t border-gray-700 grid grid-cols-4 text-[0.7rem] flex-shrink-0">
-            <button class="tab-btn active py-2 flex flex-col items-center" onclick="showPage('mapa', this)">
-                <i class="fas fa-map-marked-alt text-sm mb-0.5"></i>
-                <span>Mapa</span>
+        <!-- Barra de Navegación Inferior (Tab Bar) -->
+        <nav class="flex-shrink-0 bg-gray-800 shadow-lg grid grid-cols-4 gap-1">
+            <button onclick="showPage('page-kpis', this)" class="tab-item active text-gray-400 py-2 px-1 text-center">
+                <i class="fas fa-tachometer-alt text-lg"></i>
+                <span class="block text-xs">KPIs</span>
             </button>
-            <button class="tab-btn py-2 flex flex-col items-center" onclick="showPage('brigadas', this)">
-                <i class="fas fa-users text-sm mb-0.5"></i>
-                <span>Brigadas</span>
+            <button onclick="showPage('page-map', this)" class="tab-item text-gray-400 py-2 px-1 text-center">
+                <i class="fas fa-map-marked-alt text-lg"></i>
+                <span class="block text-xs">Mapa</span>
             </button>
-            <button class="tab-btn py-2 flex flex-col items-center" onclick="showPage('alertas', this)">
-                <i class="fas fa-bell text-sm mb-0.5"></i>
-                <span>Alertas</span>
+            <button onclick="showPage('page-brigades', this)" class="tab-item text-gray-400 py-2 px-1 text-center">
+                <i class="fas fa-users text-lg"></i>
+                <span class="block text-xs">Brigadas</span>
             </button>
-            <button class="tab-btn py-2 flex flex-col items-center" onclick="showPage('perfil', this)">
-                <i class="fas fa-user-circle text-sm mb-0.5"></i>
-                <span>Perfil</span>
+            <button onclick="showPage('page-alerts', this)" class="tab-item text-gray-400 py-2 px-1 text-center">
+                <i class="fas fa-exclamation-triangle text-lg"></i>
+                <span class="block text-xs">Alertas</span>
             </button>
         </nav>
-    </div>
-</div>
 
-<script>
-    // ----- LOGIN -----
-    document.getElementById('login-form').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const user = document.getElementById('login-user').value.trim();
-        const pass = document.getElementById('login-pass').value.trim();
-        const error = document.getElementById('login-error');
 
-        if (!user || !pass) {
-            error.classList.remove('hidden');
-            return;
-        }
-        error.classList.add('hidden');
+        <!-- Modal de Detalle de Brigada (Pantalla Completa) -->
+        <div id="detail-modal" class="detail-modal fixed inset-0 bg-gray-900 z-50 transform translate-x-full overflow-y-auto">
+            <!-- Header del Modal -->
+            <header class="bg-gray-800 p-4 flex items-center sticky top-0">
+                <button onclick="cerrarDetalle()" class="text-blue-400 text-lg">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h2 class="text-xl font-semibold text-white mx-auto" id="detail-modal-title">Detalle de Brigada</h2>
+            </header>
+            <!-- Contenido del Modal -->
+            <div id="detail-modal-content" class="p-4 space-y-5">
+                <!-- Contenido del panel de control se genera aquí -->
+            </div>
+        </div>
 
-        // Mostrar app y ocultar login
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('app').classList.remove('hidden');
-    });
 
-    // ----- CAMBIO DE PESTAÑAS -----
-    function showPage(pageId, btn) {
-        // Ocultar todas las páginas
-        document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-        // Mostrar la seleccionada
-        document.getElementById('page-' + pageId).classList.remove('hidden');
+        <!-- Modal de Foto (Simulado) -->
+        <div id="photo-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[100] hidden">
+            <div class="bg-white p-3 rounded-lg shadow-xl relative max-w-[90vw]">
+                <button onclick="cerrarFoto()" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-8 h-8 font-bold">&times;</button>
+                <h3 class="text-lg font-semibold mb-2 text-gray-800">Control de Foto</h3>
+                <img id="modal-image" src="https://placehold.co/400x300/e2e8f0/64748b?text=Foto" alt="Foto de instalación">
+                <p id="modal-image-caption" class="text-sm text-gray-600 mt-2">OT: ...</p>
+            </div>
+        </div>
 
-        // Actualizar estado de botones
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    }
-</script>
+    </div> <!-- fin app-screen -->
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /* ========= LOGIN ========= */
+            const loginScreen = document.getElementById('login-screen');
+            const appScreen = document.getElementById('app-screen');
+            const loginForm = document.getElementById('login-form');
+            const loginError = document.getElementById('login-error');
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const user = document.getElementById('login-user').value.trim();
+                const pass = document.getElementById('login-pass').value.trim();
+
+                if (!user || !pass) {
+                    loginError.classList.remove('hidden');
+                    return;
+                }
+                loginError.classList.add('hidden');
+
+                // Mostrar app y ocultar login
+                loginScreen.classList.add('hidden');
+                appScreen.classList.remove('hidden');
+            });
+
+            // --- DATOS INICIALES Y SIMULACIÓN ---
+            const zonas = ['Temuco', 'Padre Las Casas', 'Lautaro', 'Angol', 'Villarrica', 'Pitrufquén', 'Rural N.', 'Rural S.'];
+            const contratistas = ['MLA', 'TUSAN'];
+            const estados = [
+                { id: 'ruta', nombre: 'En ruta', icon: 'fa-truck', color: 'status-ruta' },
+                { id: 'faena', nombre: 'En faena', icon: 'fa-hard-hat', color: 'status-faena' },
+                { id: 'espera', nombre: 'En espera', icon: 'fa-pause-circle', color: 'status-espera' },
+                { id: 'offline', nombre: 'Offline', icon: 'fa-plug', color: 'status-offline' }
+            ];
+            const estadoTareas = {
+                PENDIENTE: { id: 'pendiente', nombre: 'Pendiente', color: 'text-gray-400' },
+                EN_CURSO: { id: 'en_curso', nombre: 'En Curso', color: 'text-green-400' },
+                FINALIZADA: { id: 'finalizada', nombre: 'Finalizada', color: 'text-blue-400' }
+            };
+
+            let brigadas = [];
+            const TOTAL_BRIGADAS = 16; 
+            let selectedBrigadeId = null;
+
+            // Contenedores del DOM (Móvil)
+            const mapContainer = document.getElementById('map-container');
+            const kpiContainer = document.getElementById('kpi-container-mobile');
+            const brigadeListContainer = document.getElementById('brigade-list-container-mobile');
+            const alertContainer = document.getElementById('alert-container-mobile');
+            const operationalStatusDot = document.getElementById('operational-status-dot');
+            
+            const detailModal = document.getElementById('detail-modal');
+            const detailModalTitle = document.getElementById('detail-modal-title');
+            const detailModalContent = document.getElementById('detail-modal-content');
+            const photoModal = document.getElementById('photo-modal');
+
+            // --- INICIALIZACIÓN DE LA APP ---
+            generarBrigadas();
+            actualizarDashboard();
+            actualizarEstadoOperacional();
+            renderizarAlertas();
+
+            // Iniciar simulaciones
+            setInterval(simularMovimiento, 3000);
+            setInterval(simularCambioEstado, 5000);
+            setInterval(() => {
+                actualizarDashboard();
+                actualizarEstadoOperacional();
+            }, 10000);
+            setInterval(renderizarAlertas, 30000);
+
+            
+            // --- FUNCIONES PRINCIPALES ---
+
+            function generarBrigadas() {
+                const clientes = ["Juan Pérez", "Maria González", "Constructora Sur", "Comercial XYZ", "Ana Castillo"];
+                const direcciones = ["Av. Alemania 0890, Temuco", "Las Encinas 2045, Angol", "Caupolicán 550, Villarrica", "Ruta 5 Sur Km 890, Rural", "Prat 321, Lautaro"];
+                const instaladores = ["Carlos Soto", "Luis Mella", "Pedro Vargas", "José Rivas", "Miguel Torres", "Raúl Pino"];
+                const fotos = [
+                    "https://placehold.co/400x300/e2e8f0/64748b?text=Medidor+Instalado",
+                    "https://placehold.co/400x300/e2e8f0/64748b?text=Empalme+Revisado",
+                    "https://placehold.co/400x300/e2e8f0/64748b?text=Tablero+OK"
+                ];
+
+                brigadas = [];
+                for (let i = 0; i < TOTAL_BRIGADAS; i++) {
+                    const contratista = (i < 13) ? 'MLA' : 'TUSAN';
+                    const tipo = (contratista === 'MLA' && i < 11) ? 'Monofásica' : 'Trifásica';
+                    const estadoActual = estados[Math.floor(Math.random() * estados.length)];
+                    
+                    brigadas.push({
+                        id: `${contratista}-${String(i + 1).padStart(2, '0')}`,
+                        contratista: contratista,
+                        tipo: tipo,
+                        zona: zonas[Math.floor(Math.random() * zonas.length)],
+                        estado: estadoActual,
+                        otActual: Math.floor(Math.random() * 5000) + 1000,
+                        bateria: Math.floor(Math.random() * 70) + 30,
+                        pos: { top: Math.random() * 85 + 5, left: Math.random() * 85 + 5 },
+                        tareaEstado: estadoTareas.PENDIENTE,
+                        cliente: clientes[Math.floor(Math.random() * clientes.length)],
+                        direccion: direcciones[Math.floor(Math.random() * direcciones.length)],
+                        instalador: instaladores[Math.floor(Math.random() * instaladores.length)],
+                        inventario: { medidores: Math.floor(Math.random() * 5) + 1, sellos: Math.floor(Math.random() * 20) + 5 },
+                        fotoURL: fotos[Math.floor(Math.random() * fotos.length)]
+                    });
+                }
+            }
+
+            function actualizarDashboard() {
+                renderizarKPIs();
+                renderizarMapa();
+                renderizarListaBrigadas();
+                if(selectedBrigadeId) {
+                    renderizarPanelDetalle();
+                }
+            }
+
+            function actualizarEstadoOperacional() {
+                const ahora = new Date();
+                const diaSemana = ahora.getDay();
+                const hora = ahora.getHours();
+                const enHorario = (diaSemana >= 1 && diaSemana <= 5 && hora >= 8 && hora < 18);
+
+                if (enHorario) {
+                    operationalStatusDot.className = 'w-3 h-3 rounded-full bg-green-500';
+                    operationalStatusDot.title = 'Operativo (08:00 - 18:00 L-V)';
+                } else {
+                    operationalStatusDot.className = 'w-3 h-3 rounded-full bg-red-500';
+                    operationalStatusDot.title = 'Fuera de Horario';
+                }
+            }
+
+            function renderizarAlertas() {
+                const alertas = [];
+                const offline = brigadas.filter(b => b.estado.id === 'offline').length;
+                if (offline > 3) {
+                    alertas.push({ tipo: 'critical', icono: 'fa-plug', color: 'text-red-400', mensaje: `${offline} brigadas OFFLINE.` });
+                }
+                const enEspera = brigadas.filter(b => b.estado.id === 'espera').length;
+                if (enEspera > 5) {
+                    alertas.push({ tipo: 'warning', icono: 'fa-pause-circle', color: 'text-yellow-400', mensaje: `${enEspera} brigadas en ESPERA.` });
+                }
+                
+                if(alertas.length === 0) {
+                        alertContainer.innerHTML = '<p class="text-sm text-gray-400">No hay alertas críticas.</p>';
+                        return;
+                }
+                alertContainer.innerHTML = alertas.map(a => `
+                    <div class="bg-gray-800 rounded-lg shadow p-3 flex items-center border-l-4 border-red-500">
+                        <i class="fas ${a.icono} ${a.color} fa-lg mr-3"></i>
+                        <span class="text-sm font-medium text-gray-200">${a.mensaje}</span>
+                    </div>
+                `).join('');
+            }
+
+            function renderizarKPIs() {
+                const costoOriginal = 184500000;
+                const costoAjustado = (costoOriginal / 31) * TOTAL_BRIGADAS;
+                const brigadasOffline = brigadas.filter(b => b.estado.id === 'offline').length;
+                const brigadasActivas = TOTAL_BRIGADAS - brigadasOffline;
+                const brigadasImproductivas = brigadas.filter(b => b.estado.id === 'espera' || b.estado.id === 'offline').length;
+                const horasImproductivasSimuladas = (brigadasImproductivas * (Math.random() * 1 + 0.5)).toFixed(1);
+                const tareasFinalizadas = brigadas.filter(b => b.tareaEstado.id === 'finalizada').length;
+                const cumplimientoSimulado = (tareasFinalizadas / TOTAL_BRIGADAS) + (Math.random() * 0.1);
+
+                const kpis = [
+                    { titulo: 'Costo Proy.', valor: `$${(costoAjustado / 1000000).toFixed(1)}M`, icono: 'fa-dollar-sign', color: 'text-blue-400' },
+                    { titulo: 'Operativas', valor: `${brigadasActivas}/${TOTAL_BRIGADAS}`, icono: 'fa-users', color: 'text-green-400' },
+                    { titulo: 'Cumplimiento', valor: `${(cumplimientoSimulado * 100).toFixed(1)}%`, icono: 'fa-check-circle', color: (cumplimientoSimulado > 0.75 ? 'text-green-400' : 'text-red-400') },
+                    { titulo: 'T. Improd.', valor: `${horasImproductivasSimuladas} h`, icono: 'fa-clock', color: (horasImproductivasSimuladas > 10 ? 'text-red-400' : 'text-yellow-400') }
+                ];
+
+                kpiContainer.innerHTML = kpis.map(kpi => `
+                    <div class="bg-gray-800 rounded-lg shadow p-4">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-gray-700 ${kpi.color}">
+                                <i class="fas ${kpi.icono} fa-lg"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-gray-400">${kpi.titulo}</h3>
+                                <p class="text-xl font-bold text-white">${kpi.valor}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            function renderizarMapa() {
+                mapContainer.querySelectorAll('.brigade-pin').forEach(pin => pin.remove());
+                brigadas.forEach(b => {
+                    const pinColor = b.tareaEstado.id === 'en_curso' ? 'status-tarea' : b.estado.color;
+                    const pinIcon = b.tareaEstado.id === 'en_curso' ? 'fa-hard-hat' : b.estado.icon;
+                    const pin = document.createElement('div');
+                    pin.className = `brigade-pin ${pinColor}`;
+                    pin.id = `pin-mob-${b.id}`;
+                    pin.style.top = `${b.pos.top}%`;
+                    pin.style.left = `${b.pos.left}%`;
+                    pin.innerHTML = `<i class="fas ${pinIcon}"></i>`;
+                    pin.title = `ID: ${b.id}\nEstado: ${b.estado.nombre}\nTarea: ${b.tareaEstado.nombre}`;
+                    mapContainer.appendChild(pin);
+                });
+            }
+
+            function renderizarListaBrigadas() {
+                brigadas.sort((a, b) => {
+                    if (a.estado.id === 'offline') return 1; if (b.estado.id === 'offline') return -1;
+                    if (a.estado.id === 'espera') return 1; if (b.estado.id === 'espera') return -1;
+                    if (a.tareaEstado.id === 'en_curso') return -1; if (b.tareaEstado.id === 'en_curso') return 1;
+                    return a.id.localeCompare(b.id);
+                });
+
+                brigadeListContainer.innerHTML = brigadas.map(b => {
+                    const bgColor = b.tareaEstado.id === 'en_curso' ? 'status-tarea' : b.estado.color;
+                    const icon = b.tareaEstado.id === 'en_curso' ? 'fa-hard-hat' : b.estado.icon;
+                    return `
+                    <div class="p-4 flex items-center cursor-pointer active:bg-gray-700" onclick="seleccionarBrigada('${b.id}')">
+                        <div class="w-10 h-10 rounded-full ${bgColor} flex-shrink-0 flex items-center justify-center mr-4">
+                            <i class="fas ${icon} text-white"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-sm text-white">${b.id} (${b.contratista})</span>
+                                <span class="text-xs font-medium ${b.tareaEstado.color} font-semibold">
+                                    ${b.tareaEstado.nombre}
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-400"><i class="fas fa-map-marker-alt fa-xs"></i> ${b.zona}</p>
+                            <p class="text-xs text-gray-500">
+                                OT: ${b.otActual} | <i class="fas ${b.bateria < 40 ? 'fa-battery-quarter text-red-500' : 'fa-battery-full text-green-500'}"></i> ${b.bateria}%
+                            </p>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-600 ml-2"></i>
+                    </div>
+                `}).join('');
+            }
+
+            function renderizarPanelDetalle() {
+                if (!selectedBrigadeId) return;
+                const b = brigadas.find(br => br.id === selectedBrigadeId);
+                if (!b) return;
+
+                detailModalTitle.textContent = b.id;
+                const tareaEnCurso = b.tareaEstado.id === 'en_curso';
+                const tareaPendiente = b.tareaEstado.id === 'pendiente';
+
+                detailModalContent.innerHTML = `
+                    <div class="bg-gray-800 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-200">Control de Tarea (OT: ${b.otActual})</h4>
+                        <div class="grid grid-cols-2 gap-3 mt-3">
+                            <button onclick="iniciarTarea()" class="p-3 rounded-lg font-semibold btn-start ${!tareaPendiente ? 'opacity-50' : ''}" ${!tareaPendiente ? 'disabled' : ''}>
+                                <i class="fas fa-play mr-1"></i> Iniciar
+                            </button>
+                            <button onclick="finalizarTarea()" class="p-3 rounded-lg font-semibold btn-finish ${!tareaEnCurso ? 'opacity-50' : ''}" ${!tareaEnCurso ? 'disabled' : ''}>
+                                <i class="fas fa-check mr-1"></i> Finalizar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-4 space-y-2">
+                        <h4 class="font-semibold text-gray-200">Cliente</h4>
+                        <p class="text-sm text-gray-300"><i class="fas fa-user fa-xs text-gray-500 w-4"></i> ${b.cliente}</p>
+                        <p class="text-sm text-gray-300"><i class="fas fa-map-marker-alt fa-xs text-gray-500 w-4"></i> ${b.direccion}</p>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-4 space-y-2">
+                        <h4 class="font-semibold text-gray-200">Brigada</h4>
+                        <p class="text-sm text-gray-300"><i class="fas fa-hard-hat fa-xs text-gray-500 w-4"></i> ${b.instalador}</p>
+                        <p class="text-sm text-gray-300"><i class="fas fa-tools fa-xs text-gray-500 w-4"></i> Inventario: ${b.inventario.medidores} medidores, ${b.inventario.sellos} sellos.</p>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-200">Control de Foto</h4>
+                        <button onclick="verFoto('${b.fotoURL}', 'OT: ${b.otActual}')" class="w-full p-3 mt-3 rounded-lg font-semibold btn-neutral ${tareaEnCurso ? 'opacity-50' : ''}" ${tareaEnCurso ? 'disabled' : ''}>
+                            <i class="fas fa-camera mr-1"></i> Ver Foto de Instalación
+                        </button>
+                    </div>
+                `;
+            }
+
+
+            // --- FUNCIONES DE ACCIÓN (Móvil) ---
+
+            window.showPage = (pageId, tabElement) => {
+                // Ocultar todas las páginas
+                document.querySelectorAll('.page-content').forEach(page => {
+                    page.classList.add('hidden');
+                });
+                // Mostrar la página seleccionada
+                document.getElementById(pageId).classList.remove('hidden');
+
+                // Actualizar estado activo en pestañas
+                document.querySelectorAll('.tab-item').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                tabElement.classList.add('active');
+            }
+
+            window.seleccionarBrigada = (id) => {
+                selectedBrigadeId = id;
+                renderizarPanelDetalle();
+                detailModal.classList.remove('translate-x-full');
+            }
+
+            window.cerrarDetalle = () => {
+                detailModal.classList.add('translate-x-full');
+                selectedBrigadeId = null;
+            }
+
+            window.iniciarTarea = () => {
+                const b = brigadas.find(br => br.id === selectedBrigadeId);
+                if (b && b.tareaEstado.id === 'pendiente') {
+                    b.tareaEstado = estadoTareas.EN_CURSO;
+                    b.estado = estados.find(e => e.id === 'faena');
+                    actualizarDashboard();
+                }
+            }
+
+            window.finalizarTarea = () => {
+                const b = brigadas.find(br => br.id === selectedBrigadeId);
+                if (b && b.tareaEstado.id === 'en_curso') {
+                    b.tareaEstado = estadoTareas.FINALIZADA;
+                    b.estado = estados.find(e => e.id === 'espera');
+                    b.inventario.medidores = Math.max(0, b.inventario.medidores - 1);
+                    actualizarDashboard();
+                    setTimeout(cerrarDetalle, 500);
+                }
+            }
+
+            window.verFoto = (url, caption) => {
+                document.getElementById('modal-image').src = url;
+                document.getElementById('modal-image-caption').textContent = caption;
+                photoModal.classList.remove('hidden');
+            }
+
+            window.cerrarFoto = () => {
+                photoModal.classList.add('hidden');
+            }
+
+            // --- FUNCIONES DE SIMULACIÓN ---
+
+            function simularMovimiento() {
+                brigadas.forEach(b => {
+                    if (b.estado.id === 'ruta' && b.tareaEstado.id !== 'en_curso') {
+                        b.pos.top += (Math.random() - 0.5) * 1;
+                        b.pos.left += (Math.random() - 0.5) * 1;
+                        b.pos.top = Math.max(5, Math.min(90, b.pos.top));
+                        b.pos.left = Math.max(5, Math.min(90, b.pos.left));
+                        const pin = document.getElementById(`pin-mob-${b.id}`);
+                        if (pin) {
+                            pin.style.top = `${b.pos.top}%`;
+                            pin.style.left = `${b.pos.left}%`;
+                        }
+                    }
+                });
+            }
+
+            function simularCambioEstado() {
+                const brigadaIndex = Math.floor(Math.random() * TOTAL_BRIGADAS);
+                const brigada = brigadas[brigadaIndex];
+                if (brigada.tareaEstado.id === 'en_curso') return;
+                let nuevoEstado = estados[Math.floor(Math.random() * estados.length)];
+                while (nuevoEstado.id === brigada.estado.id) {
+                    nuevoEstado = estados[Math.floor(Math.random() * estados.length)];
+                }
+                brigada.estado = nuevoEstado;
+                if ((nuevoEstado.id === 'faena' || nuevoEstado.id === 'espera') && brigada.tareaEstado.id !== 'finalizada') {
+                    brigada.tareaEstado = estadoTareas.PENDIENTE;
+                    brigada.otActual = Math.floor(Math.random() * 5000) + 1000;
+                }
+                if (nuevoEstado.id === 'ruta') {
+                    brigada.tareaEstado = estadoTareas.PENDIENTE;
+                }
+                if (nuevoEstado.id === 'offline') {
+                    brigada.bateria = Math.floor(Math.random() * 20);
+                } else {
+                    brigada.bateria = Math.max(brigada.bateria, 30);
+                }
+                renderizarListaBrigadas();
+                renderizarMapa();
+            }
+
+        });
+    </script>
 </body>
 </html>
+
