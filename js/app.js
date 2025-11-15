@@ -311,6 +311,18 @@ document.addEventListener('DOMContentLoaded', () => {
     window.cerrarFoto = () => {
         photoModal.classList.add('hidden');
     };
+    window.logout = () => {
+        // Volver a la pantalla de login
+        const loginScreen = document.getElementById('login-screen');
+        const appScreen   = document.getElementById('app-screen');
+        loginScreen.classList.remove('hidden');
+        appScreen.classList.add('hidden');
+
+        // Limpiar campos de login (opcional)
+        document.getElementById('login-user').value = '';
+        document.getElementById('login-pass').value = '';
+    };
+
 
     function simularMovimiento() {
         brigadas.forEach(b => {

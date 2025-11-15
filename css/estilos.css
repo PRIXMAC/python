@@ -9,6 +9,7 @@ body {
 
 /* Pines del mapa */
 .brigade-pin {
+    pointer-events: auto;
     position: absolute;
     width: 2.2rem;
     height: 2.2rem;
@@ -61,5 +62,6 @@ body {
 
 /* Fondo tipo “mapa simplificado” debajo del Google Maps */
 #map-container {
-    background: radial-gradient(circle at 20% 20%, #374151 0, #111827 60%);
+    /*background: radial-gradient(circle at 20% 20%, #374151 0, #111827 60%);*/
+    pointer-events: none;
 }

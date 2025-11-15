@@ -81,9 +81,9 @@
             </div>
 
             <!-- MAPA -->
-            <div id="page-map" class="page-content hidden h-full space-y-2">
-                <!-- Google Maps real -->
-                <div class="w-full h-1/2">
+            <div id="page-map" class="page-content hidden h-full">
+                <div id="map-wrapper" class="relative w-full h-full">
+                    <!-- Google Maps real, de fondo -->
                     <iframe
                         class="w-full h-full"
                         style="border:0;"
@@ -92,15 +92,24 @@
                         referrerpolicy="no-referrer-when-downgrade"
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25562.58079084543!2d-72.625656!3d-38.7396505!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9614f396e2f80c27%3A0xb2a68f2e2ad3c9d!2sTemuco%2C%20Araucan%C3%ADa!5e0!3m2!1ses-419!2scl!4v1700000000000!5m2!1ses-419!2scl">
                     </iframe>
-                </div>
 
-                <!-- Mapa operativo con pines -->
-                <div id="map-container" class="relative w-full h-1/2">
-                    <div class="absolute top-[30%] left-[40%] text-gray-300 font-bold text-xs px-1 py-0.5 bg-black/30 rounded">Temuco</div>
-                    <div class="absolute top-[20%] left-[20%] text-gray-300 font-bold text-xs px-1 py-0.5 bg-black/30 rounded">Angol</div>
-                    <div class="absolute top-[60%] left-[70%] text-gray-300 font-bold text-xs px-1 py-0.5 bg-black/30 rounded">Villarrica</div>
+                    <!-- Capa de pines encima del mapa -->
+                    <div id="map-container" class="absolute inset-0 pointer-events-none">
+                        <!-- Etiquetas de zonas -->
+                        <div class="absolute top-[30%] left-[40%] text-gray-200 font-bold text-xs px-1 py-0.5 bg-black/40 rounded">
+                            Temuco
+                        </div>
+                        <div class="absolute top-[20%] left-[20%] text-gray-200 font-bold text-xs px-1 py-0.5 bg-black/40 rounded">
+                            Angol
+                        </div>
+                        <div class="absolute top-[60%] left-[70%] text-gray-200 font-bold text-xs px-1 py-0.5 bg-black/40 rounded">
+                            Villarrica
+                        </div>
+                        <!-- Aquí JS seguirá creando los .brigade-pin -->
+                    </div>
                 </div>
             </div>
+
 
             <!-- BRIGADAS -->
             <div id="page-brigades" class="page-content hidden">
@@ -112,10 +121,56 @@
                 <h2 class="text-xl font-semibold text-gray-200 mb-4">Alertas Críticas</h2>
                 <section id="alert-container-mobile" class="space-y-3"></section>
             </div>
+
+            <!-- PERFIL -->
+            <div id="page-profile" class="page-content hidden p-4">
+                <h2 class="text-xl font-semibold text-gray-200 mb-4">Perfil de usuario</h2>
+
+                <div class="bg-gray-800 rounded-xl p-4 space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
+                            <i class="fas fa-user-hard-hat text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-400">Operador</p>
+                            <p class="text-base font-semibold">Supervisor Demo</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 text-xs text-gray-300 pt-2">
+                        <div>
+                            <p class="text-gray-400">Zona</p>
+                            <p class="font-semibold">Araucanía</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400">Turno</p>
+                            <p class="font-semibold">Día · 08:00–18:00</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400">Rol</p>
+                            <p class="font-semibold">Torre de control</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400">Contrato</p>
+                            <p class="font-semibold">CGE / Contratistas</p>
+                        </div>
+                    </div>
+
+                    <button onclick="logout()"
+                        class="w-full mt-3 bg-red-600 hover:bg-red-500 text-sm font-semibold py-2 rounded-lg">
+                        Cerrar sesión
+                    </button>
+                </div>
+
+                <p class="text-[0.65rem] text-gray-500 mt-3">
+                    Nota para la presentación: este perfil es solo referencial para la demo, no usa datos reales.
+                </p>
+            </div>
+
         </main>
 
         <!-- Navegación inferior -->
-        <nav class="flex-shrink-0 bg-gray-800 shadow-lg grid grid-cols-4 gap-1">
+        <nav class="flex-shrink-0 bg-gray-800 shadow-lg grid grid-cols-5 gap-1">
             <button onclick="showPage('page-kpis', this)" class="tab-item active text-gray-400 py-2 px-1 text-center">
                 <i class="fas fa-tachometer-alt text-lg"></i>
                 <span class="block text-xs">KPIs</span>
@@ -132,8 +187,11 @@
                 <i class="fas fa-exclamation-triangle text-lg"></i>
                 <span class="block text-xs">Alertas</span>
             </button>
+            <button onclick="showPage('page-profile', this)" class="tab-item text-gray-400 py-2 px-1 text-center">
+                <i class="fas fa-user-circle text-lg"></i>
+                <span class="block text-xs">Perfil</span>
+            </button>
         </nav>
-
         <!-- Modal detalle brigada -->
         <div id="detail-modal" class="detail-modal fixed inset-0 bg-gray-900 z-50 transform translate-x-full overflow-y-auto">
             <header class="bg-gray-800 p-4 flex items-center sticky top-0">
